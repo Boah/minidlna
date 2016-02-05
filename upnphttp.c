@@ -95,6 +95,74 @@ enum event_type {
 	E_RENEW
 };
 
+
+struct logEntity{
+	time_t start;
+	time_t stop;
+	time_t duration;
+	off_t lastOffset;
+	off_t fileSize;
+	float ratio;
+	char* fileName;
+	char* filePath;
+};
+
+struct logEntity currentLog;
+
+void initLogEntity(){
+	memset(&currentLog, 0x00, sizeof(currentLog));
+}
+
+void addStart(time_t startTime, char* filePath){
+	currentLog.start = startTime;
+	free(currentLog.filePath);
+	currentLog.filePath = malloc(strlen(filePath)+1);
+	strcpy(currentLog.filePath, filePath);
+	currentLog.fileName = strrchr(currentLog.filePath, '/')+1;
+}
+
+void addEnd(time_t end, off_t offset, off_t size){
+	currentLog.stop = end;
+	currentLog.lastOffset = offset;
+	currentLog.fileSize = size;
+	currentLog.duration = currentLog.stop - currentLog.start + offset;
+	currentLog.ratio = (float) currentLog.duration/currentLog.fileSize;
+}
+
+void appendToXML(){
+	if(currentLog.ratio > 0.01){
+		char* temp = NULL;
+		FILE *fp = fopen("/var/tmp/minidlna.xml" , "a");
+		fwrite("<Entity>\n", 1, strlen("<Entity>")+1, fp);
+		fwrite("  <file>", 1, strlen("  <file>"), fp);
+		fwrite(currentLog.fileName, 1, strlen(currentLog.fileName), fp);
+		fwrite("</file>\n", 1, strlen("</file>")+1, fp);
+		fwrite("  <ratio>", 1, strlen("  <ratio>"), fp);
+		temp = malloc(6);
+		snprintf(temp, 5,"%.2f", currentLog.ratio);
+		fwrite(temp, 4, 1, fp);
+		fwrite("</ratio>\n", 1, strlen("</ratio>")+1, fp);
+		fwrite("  <date>", 1, strlen("  <date>"), fp);
+		temp = malloc(12);
+		snprintf(temp, 11,"%ld", currentLog.start);
+		fwrite(temp, strlen(temp), 1, fp);
+		fwrite("</date>\n", 1, strlen("</date>")+1, fp);
+		fwrite("</Entity>\n", 1, strlen("</Entity>")+1, fp);
+		fclose(fp);
+		free(temp);
+	}
+}
+
+void printLogEntity(){
+	printf("LogEntity\n");
+	printf("=========\n");
+	printf("File: %s\n", currentLog.filePath);
+	printf("Duration: %ld from %ld\n", currentLog.duration, currentLog.fileSize);
+	printf("Ratio: %f", currentLog.ratio);
+	printf("\n\n\n");
+	appendToXML();
+}
+
 static void SendResp_icon(struct upnphttp *, char * url);
 static void SendResp_albumArt(struct upnphttp *, char * url);
 static void SendResp_caption(struct upnphttp *, char * url);
@@ -115,6 +183,7 @@ New_upnphttp(int s)
 	ret->socket = s;
 	return ret;
 }
+
 
 void
 CloseSocket_upnphttp(struct upnphttp * h)
@@ -1279,6 +1348,9 @@ send_file(struct upnphttp * h, int sendfd, off_t offset, off_t end_offset)
 			else
 			{
 				//DPRINTF(E_DEBUG, L_HTTP, "sent %lld bytes to %d. offset is now %lld.\n", ret, h->socket, offset);
+//				printf("\n\n\nSent@Time: %ld S: %ld A: %ld O: %ld\n\n\n", time(NULL), ret, end_offset, offset);
+				addEnd(time(NULL), offset-ret, end_offset);
+				printLogEntity();
 				continue;
 			}
 		}
@@ -1882,6 +1954,8 @@ SendResp_dlnafile(struct upnphttp *h, char *object)
 #endif
 
 	DPRINTF(E_INFO, L_HTTP, "Serving DetailID: %lld [%s]\n", (long long)id, last_file.path);
+//	printf("\n\n\nSending@Time: %ld File: %s\n\n\n", time(NULL), last_file.path);
+	addStart(time(NULL), last_file.path);
 
 	if( h->reqflags & FLAG_XFERSTREAMING )
 	{
