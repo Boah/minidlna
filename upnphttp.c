@@ -148,7 +148,7 @@ void appendToXML(){
 		fwrite("</ratio>\n", 1, strlen("</ratio>")+1, fp);
 		fwrite("  <date>", 1, strlen("  <date>"), fp);
 		temp = malloc(12);
-		snprintf(temp, 11,"%lld", currentLog.start);
+		snprintf(temp, 11,"%ld", currentLog.start);
 		fwrite(temp, strlen(temp), 1, fp);
 		fwrite("</date>\n", 1, strlen("</date>")+1, fp);
 		fwrite("</Entity>\n", 1, strlen("</Entity>")+1, fp);
@@ -161,7 +161,7 @@ void printLogEntity(){
 	printf("LogEntity\n");
 	printf("=========\n");
 	printf("File: %s\n", currentLog.filePath);
-	printf("Duration: %lld from %lld\n", currentLog.duration, currentLog.fileSize);
+	printf("Duration: %ld from %lld\n", currentLog.duration, currentLog.fileSize);
 	printf("Ratio: %f", currentLog.ratio);
 	printf("\n\n\n");
 	appendToXML();
