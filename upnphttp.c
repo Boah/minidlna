@@ -134,7 +134,7 @@ void addEnd(time_t end, off_t offset, off_t size){
 }
 
 void appendToXML(){
-	if((currentLog.stop-currentLog.start) > 10 && currentLog.ratio > 0.01 && currentLog.ratio < 1.2 && currentLog.fileName != NULL){
+	if((currentLog.stop-currentLog.start) > 2 && currentLog.ratio > 0.01 && currentLog.ratio < 1.2 && currentLog.fileName != NULL){
 		char* temp = NULL;
 		FILE *fp = fopen("/var/tmp/minidlna.xml" , "a");
 		fwrite("<Entity>\n", 1, strlen("<Entity>")+1, fp);
