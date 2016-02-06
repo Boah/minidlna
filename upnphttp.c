@@ -118,7 +118,9 @@ void addStart(time_t startTime, char* filePath){
 	free(currentLog.filePath);
 	currentLog.filePath = malloc(strlen(filePath)+1);
 	strcpy(currentLog.filePath, filePath);
-	currentLog.fileName = strrchr(currentLog.filePath, '/')+1;
+	currentLog.fileName = strrchr(currentLog.filePath, '/');
+	if(currentLog.fileName != NULL)
+		currentLog.fileName++;
 }
 
 void addEnd(time_t end, off_t offset, off_t size){
@@ -130,7 +132,7 @@ void addEnd(time_t end, off_t offset, off_t size){
 }
 
 void appendToXML(){
-	if(currentLog.ratio > 0.01){
+	if(currentLog.ratio > 0.01 && currentLog.ratio < 1.2 && currentLog.fileName != NULL){
 		char* temp = NULL;
 		FILE *fp = fopen("/var/tmp/minidlna.xml" , "a");
 		fwrite("<Entity>\n", 1, strlen("<Entity>")+1, fp);
@@ -151,6 +153,8 @@ void appendToXML(){
 		fclose(fp);
 		free(temp);
 	}
+	free(currentLog.filePath);
+	initLogEntity();
 }
 
 void printLogEntity(){
