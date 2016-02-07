@@ -151,6 +151,13 @@ void appendToXML(){
 		snprintf(temp, 5,"%.2f", currentLog.ratio);
 		fwrite(temp, 4, 1, fp);
 		fwrite("</ratio>\n", 1, strlen("</ratio>")+1, fp);
+
+		fwrite("  <duration>", 1, strlen("  <duration>"), fp);
+		char buffd[20];
+		strftime(buffd, 20, "%H:%M:%S", localtime(&currentLog.duration));
+		fwrite(buffd, 19, 1, fp);
+		fwrite("</duration>\n", 1, strlen("</duration>")+1, fp);
+
 		fwrite("  <date>", 1, strlen("  <date>"), fp);
 		char buff[20];
 		strftime(buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&currentLog.start));
