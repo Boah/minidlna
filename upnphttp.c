@@ -132,8 +132,8 @@ void addStart(time_t startTime, char* filePath){
 
 void addEnd(time_t end, off_t offset, off_t size){
 	currentLog.stop = end;
-	currentLog.lastOffset = offset/1000;
-	currentLog.fileSize = size/1000;
+	currentLog.lastOffset = offset;
+	currentLog.fileSize = size;
 	currentLog.duration = currentLog.stop - currentLog.start;
 	currentLog.ratio = (float) (currentLog.duration+offset)/currentLog.fileSize;
 }
@@ -157,18 +157,6 @@ void appendToXML(){
 		strftime(buffd, 9, "%H:%M:%S", gmtime(&currentLog.duration));
 		fwrite(buffd, 8, 1, fp);
 		fwrite("</duration>\n", 1, strlen("</duration>")+1, fp);
-
-		fwrite("  <offset>", 1, strlen("  <offset>"), fp);
-//		char buffd[9];
-		strftime(buffd, 9, "%H:%M:%S", gmtime(&currentLog.lastOffset));
-		fwrite(buffd, 8, 1, fp);
-		fwrite("</offset>\n", 1, strlen("</offset>")+1, fp);
-
-		fwrite("  <size>", 1, strlen("  <size>"), fp);
-//		char buffd[9];
-		strftime(buffd, 9, "%H:%M:%S", gmtime(&currentLog.fileSize));
-		fwrite(buffd, 8, 1, fp);
-		fwrite("</size>\n", 1, strlen("</size>")+1, fp);
 
 		fwrite("  <date>", 1, strlen("  <date>"), fp);
 		char buff[20];
