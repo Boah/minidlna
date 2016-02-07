@@ -154,7 +154,7 @@ void appendToXML(){
 
 		fwrite("  <duration>", 1, strlen("  <duration>"), fp);
 		char buffd[9];
-		strftime(buffd, 9, "%H:%M:%S", localtime(&currentLog.duration));
+		strftime(buffd, 9, "%H:%M:%S", gmtime(&currentLog.duration));
 		fwrite(buffd, 8, 1, fp);
 		fwrite("</duration>\n", 1, strlen("</duration>")+1, fp);
 
