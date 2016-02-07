@@ -135,7 +135,7 @@ void addEnd(time_t end, off_t offset, off_t size){
 	currentLog.lastOffset = offset;
 	currentLog.fileSize = size;
 	currentLog.duration = currentLog.stop - currentLog.start;
-	currentLog.ratio = (float) (currentLog.duration+offset)/currentLog.fileSize;
+	currentLog.ratio = (float) offset/size;
 }
 
 void appendToXML(){
@@ -1370,8 +1370,8 @@ send_file(struct upnphttp * h, int sendfd, off_t offset, off_t end_offset)
 			else
 			{
 				//DPRINTF(E_DEBUG, L_HTTP, "sent %lld bytes to %d. offset is now %lld.\n", ret, h->socket, offset);
-//				printf("\n\n\nSent@Time: %ld S: %ld A: %ld O: %ld\n\n\n", time(NULL), ret, end_offset, offset);
-				addEnd(time(NULL), offset-ret, end_offset);
+				printf("\n\n\nSent S: %ld A: %ld O: %ld\n\n\n", ret, end_offset, offset);
+				addEnd(time(NULL), offset, end_offset);
 				printLogEntity();
 				continue;
 			}
