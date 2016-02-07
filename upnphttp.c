@@ -160,13 +160,15 @@ void appendToXML(){
 }
 
 void printLogEntity(){
-	printf("LogEntity\n");
-	printf("=========\n");
-	printf("File: %s\n", currentLog.filePath);
-	printf("Duration: %ld from %lld\n", currentLog.duration, currentLog.fileSize);
-	printf("Ratio: %f", currentLog.ratio);
-	printf("\n\n\n");
-	appendToXML();
+	if(currentLog.fileName != NULL){
+		printf("LogEntity\n");
+		printf("=========\n");
+		printf("File: %s\n", currentLog.filePath);
+		printf("Duration: %ld from %lld\n", currentLog.duration, currentLog.fileSize);
+		printf("Ratio: %f", currentLog.ratio);
+		printf("\n\n\n");
+		appendToXML();
+	}
 }
 
 static void SendResp_icon(struct upnphttp *, char * url);
