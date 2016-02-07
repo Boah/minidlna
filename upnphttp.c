@@ -160,13 +160,13 @@ void appendToXML(){
 
 		fwrite("  <offset>", 1, strlen("  <offset>"), fp);
 //		char buffd[9];
-		strftime(buffd, 9, "%H:%M:%S", gmtime(&currentLog.lastOffset));
+		strftime(buffd, 9, "%H:%M:%S", gmtime(&currentLog.lastOffset/1000));
 		fwrite(buffd, 8, 1, fp);
 		fwrite("</offset>\n", 1, strlen("</offset>")+1, fp);
 
 		fwrite("  <size>", 1, strlen("  <size>"), fp);
 //		char buffd[9];
-		strftime(buffd, 9, "%H:%M:%S", gmtime(&currentLog.fileSize));
+		strftime(buffd, 9, "%H:%M:%S", gmtime(&currentLog.fileSize/1000));
 		fwrite(buffd, 8, 1, fp);
 		fwrite("</size>\n", 1, strlen("</size>")+1, fp);
 
