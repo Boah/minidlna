@@ -153,10 +153,9 @@ void appendToXML(){
 		fwrite("</ratio>\n", 1, strlen("</ratio>")+1, fp);
 
 		fwrite("  <duration>", 1, strlen("  <duration>"), fp);
-		struct tm tm = *localtime(&currentLog.duration);
-		char buffd[10];
-		snprintf(buffd, 10, "%2d:%2d:%2d", tm.tm_hour, tm.tm_min, tm.tm_sec);
-		fwrite(buffd, 9, 1, fp);
+		char buffd[9];
+		strftime(buffd, 9, "%H:%M:%S", localtime(&currentLog.duration));
+		fwrite(buffd, 8, 1, fp);
 		fwrite("</duration>\n", 1, strlen("</duration>")+1, fp);
 
 		fwrite("  <date>", 1, strlen("  <date>"), fp);
