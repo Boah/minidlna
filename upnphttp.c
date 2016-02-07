@@ -134,8 +134,8 @@ void addEnd(time_t end, off_t offset, off_t size){
 	currentLog.stop = end;
 	currentLog.lastOffset = offset;
 	currentLog.fileSize = size;
-	currentLog.duration = currentLog.stop - currentLog.start + offset;
-	currentLog.ratio = (float) currentLog.duration/currentLog.fileSize;
+	currentLog.duration = currentLog.stop - currentLog.start;
+	currentLog.ratio = (float) (currentLog.duration+offset)/currentLog.fileSize;
 }
 
 void appendToXML(){
@@ -153,9 +153,10 @@ void appendToXML(){
 		fwrite("</ratio>\n", 1, strlen("</ratio>")+1, fp);
 
 		fwrite("  <duration>", 1, strlen("  <duration>"), fp);
-		char buffd[20];
-		strftime(buffd, 20, "%H:%M:%S", localtime(&currentLog.duration));
-		fwrite(buffd, 19, 1, fp);
+		struct tm tm = *localtime(&currentLog.duration);
+		char buffd[10];
+		snprintf(buffd, 10, "%2d:%2d:%2d", tm.tm_hour, tm.tm_min, tm.tm_sec);
+		fwrite(buffd, 9, 1, fp);
 		fwrite("</duration>\n", 1, strlen("</duration>")+1, fp);
 
 		fwrite("  <date>", 1, strlen("  <date>"), fp);
