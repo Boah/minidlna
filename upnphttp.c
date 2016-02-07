@@ -113,9 +113,14 @@ void initLogEntity(){
 	memset(&currentLog, 0x00, sizeof(currentLog));
 }
 
+void appendToXML();
+
 void addStart(time_t startTime, char* filePath){
-	free(currentLog.filePath);
-	initLogEntity();
+	//store last if not stored
+	if(currentLog.start != 0){
+		appendToXML();
+	}
+
 	currentLog.start = startTime;
 	free(currentLog.filePath);
 	currentLog.filePath = malloc(strlen(filePath)+1);
@@ -157,6 +162,8 @@ void appendToXML(){
 		fclose(fp);
 		free(temp);
 	}
+	free(currentLog.filePath);
+	initLogEntity();
 }
 
 void printLogEntity(){
