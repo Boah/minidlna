@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="style/dlnaHistStyle.xsl"?>
+<History>
+<Entity>
+  <file>MyFile.SomeDate.etc.avi</file>
+  <ratio>1.00</ratio>
+  <duration>00:20:09</duration>
+  <date>2016-02-10 19:53:48</date>
+</Entity>
+</History>
