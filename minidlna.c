@@ -100,6 +100,8 @@
 # define sqlite3_threadsafe() 0
 #endif
  
+extern char log_db_path[];
+
 /* OpenAndConfHTTPSocket() :
  * setup the socket used to handle incoming HTTP connections. */
 static int
@@ -666,6 +668,19 @@ init(int argc, char **argv)
 			if (access(path, F_OK) != 0)
 				DPRINTF(E_FATAL, L_GENERAL, "Log path not accessible! [%s]\n", path);
 			strncpyt(log_path, path, PATH_MAX);
+			break;
+		case LOG_DB_PATH:
+			path = realpath(ary_options[i].value, buf);
+			if (!path)
+				path = (ary_options[i].value);
+//			make_dir(path, S_ISVTX|S_IRWXU|S_IRWXG|S_IRWXO);
+			FILE *fp = fopen(path, "ab+");
+			if(!fp)
+				DPRINTF(E_FATAL, L_GENERAL, "Log DB path not accessible! [%s]\n", path);
+			else{
+				fclose(fp);
+				strncpyt(log_db_path, path, PATH_MAX);
+			}
 			break;
 		case UPNPLOGLEVEL:
 			log_level = ary_options[i].value;

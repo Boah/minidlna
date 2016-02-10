@@ -82,6 +82,8 @@
 #include "process.h"
 #include "sendfile.h"
 
+extern char log_db_path[];
+
 #define MAX_BUFFER_SIZE 2147483647
 #define MIN_BUFFER_SIZE 65536
 
@@ -139,9 +141,9 @@ void addEnd(time_t end, off_t offset, off_t size){
 }
 
 void appendToXML(){
-	if((currentLog.stop-currentLog.start) > 2 && currentLog.fileName != NULL){
+	if(log_db_path[0] != '\0' && (currentLog.stop-currentLog.start) > 2 && currentLog.fileName != NULL){
 		char* temp = NULL;
-		FILE *fp = fopen("/srv/http/minidlna/minidlna.xml" , "a");
+		FILE *fp = fopen(log_db_path , "a");
 		fwrite("<Entity>\n", 1, strlen("<Entity>")+1, fp);
 		fwrite("  <file>", 1, strlen("  <file>"), fp);
 		fwrite(currentLog.fileName, 1, strlen(currentLog.fileName), fp);
@@ -168,6 +170,8 @@ void appendToXML(){
 		fwrite("</Entity>\n", 1, strlen("</Entity>")+1, fp);
 		fclose(fp);
 		free(temp);
+
+		printf("Appended to %s", log_db_path);
 	}
 	free(currentLog.filePath);
 	initLogEntity();
